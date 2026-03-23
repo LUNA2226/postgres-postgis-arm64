@@ -25,5 +25,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: LUNA2226/postgres-postgis-arm64:latest
+          tags: tags: lunarica/postgres-postgis-arm64:latest
           platforms: linux/amd64,linux/arm64
