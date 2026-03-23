@@ -24,6 +24,13 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
+          context: .
+          # 1. Aponta para a nova "receita" leve
+          file: ./Dockerfile.slim 
+          # 2. Foca apenas em ARM64 para ser 2x mais rápido e evitar erros
+          platforms: linux/arm64 
           push: true
-          tags: lunarica/postgres-postgis-arm64:latest
-          platforms: linux/amd64,linux/arm64
+          # 3. Atualiza a 'latest' e a 'slim' com a versão magra
+          tags: |
+            lunarica/postgres-postgis-arm64:latest
+            lunarica/postgres-postgis-arm64:slim
