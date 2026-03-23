@@ -1,4 +1,4 @@
-# ESTÁGIO 1: Construção (Onde compilamos o pgvector)
+ # ESTÁGIO 1: Construção
 FROM postgres:15 AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -13,15 +13,16 @@ RUN curl -L https://github.com/pgvector/pgvector/archive/refs/tags/v0.8.0.tar.gz
     tar -xzf pgvector.tar.gz && \
     cd pgvector-0.8.0 && make && make install
 
-# ESTÁGIO 2: Final (Imagem limpa para o servidor ARM)
+# ESTÁGIO 2: Imagem Final Leve
 FROM postgres:15
 
+# Instalamos o PostGIS necessário para o Georadar
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-15-postgis-3 \
     && rm -rf /var/lib/apt/lists/*
 
-# Pegamos apenas os arquivos prontos da etapa anterior
+# COPIANDO OS ARQUIVOS DO PGVECTOR (Caminhos Corrigidos)
 COPY --from=builder /usr/lib/postgresql/15/lib/vector.so /usr/lib/postgresql/15/lib/
-COPY --from=builder /usr/lib/postgresql/15/share/extension/vector* /usr/lib/postgresql/15/share/extension/
+COPY --from=builder /usr/share/postgresql/15/extension/vector* /usr/share/postgresql/15/extension/
 
 COPY init.sql /docker-entrypoint-initdb.d/
