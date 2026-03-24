@@ -1,4 +1,4 @@
-name: Build PostGIS ARM64
+name: Build PostGIS Georadar
 
 on:
   push:
@@ -28,6 +28,6 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/arm64 # <--- ISSO AQUI É OBRIGATÓRIO
+          platforms: linux/arm64 # <--- O SEGREDO ESTÁ AQUI
           push: true
           tags: lunarica/postgres-postgis-arm64:latest
