@@ -12,6 +12,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Importante para conseguir compilar ARM64 dentro do GitHub (x86)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -25,12 +29,10 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          # 1. Aponta para a nova "receita" leve
-          file: ./Dockerfile.slim 
-          # 2. Foca apenas em ARM64 para ser 2x mais rápido e evitar erros
-          platforms: linux/arm64 
+          # Garanta que o nome do arquivo abaixo seja o que você salvou o código novo
+          file: ./Dockerfile 
+          platforms: linux/arm64
           push: true
-          # 3. Atualiza a 'latest' e a 'slim' com a versão magra
           tags: |
             lunarica/postgres-postgis-arm64:latest
             lunarica/postgres-postgis-arm64:slim
