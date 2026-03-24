@@ -1,5 +1,4 @@
-# ESTÁGIO 1: Builder
-FROM postgres:15 AS builder
+FROM postgis/postgis:15-3.4
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
@@ -10,15 +9,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN curl -L https://github.com/pgvector/pgvector/archive/refs/tags/v0.8.0.tar.gz -o pgvector.tar.gz && \
     tar -xzf pgvector.tar.gz && \
-    cd pgvector-0.8.0 && make && make install
+    cd pgvector-0.8.0 && make && make install && \
+    cd .. && rm -rf pgvector.tar.gz pgvector-0.8.0
 
+RUN apt-get remove -y build-essential postgresql-server-dev-15 curl && \
+    apt-get autoremove -y && \
+    apt-get clean
 
-# ESTÁGIO 2: Final (com PostGIS já pronto)
-FROM postgis/postgis:15-3.4
-
-# Copia pgvector compilado
-COPY --from=builder /usr/lib/postgresql/15/lib/vector.so /usr/lib/postgresql/15/lib/
-COPY --from=builder /usr/share/postgresql/15/extension/vector* /usr/share/postgresql/15/extension/
-
-# Script de inicialização
 COPY init.sql /docker-entrypoint-initdb.d/
