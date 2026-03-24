@@ -1,10 +1,9 @@
-# Base oficial do Postgres 15 (que tem suporte nativo a ARM64)
+# Base oficial do Postgres 15 (Suporte nativo a ARM64)
 FROM postgres:15
 
-# Instalamos o PostGIS e as dependências de sistema
+# Instalamos apenas o essencial para o Georadar
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-15-postgis-3 \
-    postgresql-15-postgis-3-scripts \
     postgis \
     && rm -rf /var/lib/apt/lists/*
 
