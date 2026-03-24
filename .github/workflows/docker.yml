@@ -1,4 +1,4 @@
-name: Build Docker Image
+name: Build PostGIS ARM64
 
 on:
   push:
@@ -7,12 +7,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Importante para conseguir compilar ARM64 dentro do GitHub (x86)
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -29,10 +27,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          # Garanta que o nome do arquivo abaixo seja o que você salvou o código novo
-          file: ./Dockerfile 
-          platforms: linux/arm64
+          file: ./Dockerfile
+          platforms: linux/arm64 # <--- ISSO AQUI É OBRIGATÓRIO
           push: true
-          tags: |
-            lunarica/postgres-postgis-arm64:latest
-            lunarica/postgres-postgis-arm64:slim
+          tags: lunarica/postgres-postgis-arm64:latest
